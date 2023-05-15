@@ -1,15 +1,33 @@
 /* eslint-disable prettier/prettier */
-import { ApiProperty } from '@nestjs/swagger';
-import { Table, Column, Model } from 'sequelize-typescript';
-@Table
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  CreatedAt,
+  UpdatedAt,
+} from 'sequelize-typescript';
+
+@Table({ tableName: 'Tasks' })
 export class Task extends Model {
-  @Column
-  @ApiProperty()
+  @Column({
+    primaryKey: true,
+    autoIncrement: true,
+  })
+  id: number;
+
+  @Column(DataType.STRING)
   title: string;
-  @Column
-  @ApiProperty()
+
+  @Column(DataType.STRING)
   date: string;
-  @Column
-  @ApiProperty()
+
+  @Column(DataType.BOOLEAN)
   status: boolean;
+
+  @CreatedAt
+  createdAt: Date;
+
+  @UpdatedAt
+  updatedAt: Date;
 }

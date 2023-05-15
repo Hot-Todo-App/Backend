@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Task } from './tasks/task.model';
 import { TasksModule } from './tasks/tasks.module';
+import { TasksService } from './tasks/tasks.service';
+import { TasksController } from './tasks/tasks.controller';
 
 @Module({
   imports: [
@@ -12,10 +14,13 @@ import { TasksModule } from './tasks/tasks.module';
       username: 'root',
       password: 'password',
       database: 'test',
-      models: [Task],
-      synchronize: true, // Use with caution
+      autoLoadModels: true,
+      synchronize: true,
     }),
+    SequelizeModule.forFeature([Task]),
     TasksModule,
   ],
+  controllers: [TasksController],
+  providers: [TasksService],
 })
 export class AppModule {}
