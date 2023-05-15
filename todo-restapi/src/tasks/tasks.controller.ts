@@ -24,25 +24,29 @@ export class TasksController {
   findAll(): Promise<Task[]> {
     return this.taskService.findAll();
   }
-  @Get()
+  @Get('/getAllCompletedTasks')
+  findCompleted(): Promise<Task[]> {
+    return this.taskService.findCompleted();
+  }
+  @Get(':id')
   @ApiParam({ name: 'id' })
-  findOne(@Param() params): Promise<Task> {
-    return this.taskService.findOne(params.id);
+  findOne(@Param('id') id: string): Promise<Task> {
+    return this.taskService.findOne(id);
   }
 
   @Post('/createTask')
   addTask(@Body() task: Task): Promise<Task> {
     return this.taskService.create(task);
   }
-  @Delete(':id')
+  @Delete('/delete/:id')
   @ApiParam({ name: 'id' })
-  destroy(@Param('id') id: number): Promise<void> {
+  destroy(@Param('id') id: string): Promise<void> {
     return this.taskService.destroy(id);
   }
   @Put(':id')
   @ApiParam({ name: 'id' })
   @ApiParam({ name: 'title' })
-  update(@Param('id') id: number, @Param('title') title): Promise<void> {
+  update(@Param('id') id: string, @Param('title') title): Promise<void> {
     return this.taskService.updateTitle(id, title);
   }
 }

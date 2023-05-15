@@ -22,7 +22,7 @@ export class Task extends Model {
   title: string;
 
   @Column(DataType.BOOLEAN)
-  @ApiProperty({ example: true })
+  @ApiProperty({ example: false })
   status: boolean;
 
   @CreatedAt

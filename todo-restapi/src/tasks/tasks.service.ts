@@ -21,6 +21,10 @@ export class TasksService {
   async findAll(): Promise<Task[]> {
     return this.taskModel.findAll<Task>();
   }
+  //get all completed tasks
+  async findCompleted(): Promise<Task[]> {
+    return this.taskModel.findAll<Task>({ where: { status: true } });
+  }
   async findOne(id: string): Promise<Task> {
     return this.taskModel.findOne<Task>({ where: { id: id } });
   }
@@ -31,7 +35,7 @@ export class TasksService {
     taskData.id = id;
     return this.taskModel.create<Task>(taskData);
   }
-  async destroy(id: number): Promise<void> {
+  async destroy(id: string): Promise<void> {
     const task = await this.taskModel.findByPk<Task>(id);
     if (task) {
       await task.destroy();
@@ -39,7 +43,7 @@ export class TasksService {
       throw new Error('Task not found');
     }
   }
-  async updateTitle(id: number, title: string): Promise<void> {
+  async updateTitle(id: string, title: string): Promise<void> {
     const task1 = await this.taskModel.findByPk<Task>(id);
     if (task1) {
       await task1.update({ title }, { where: { id: id } });
@@ -47,4 +51,5 @@ export class TasksService {
       throw new Error('Task not found...');
     }
   }
+  //update completed or not (status)
 }
