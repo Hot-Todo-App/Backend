@@ -22,8 +22,9 @@ export class TasksService {
     return this.taskModel.findAll<Task>();
   }
   async findOne(id: string): Promise<Task> {
-    return taskModel.findOne<Task>(id);
+    return this.taskModel.findOne<Task>({ where: { id: id } });
   }
+
   async create(task: Task): Promise<Task> {
     const { ...taskData } = task;
     const id = uuidv4();

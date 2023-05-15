@@ -27,7 +27,7 @@ export class TasksController {
   @Get()
   @ApiParam({ name: 'id' })
   findOne(@Param() params): Promise<Task> {
-    return taskService.findOne(params.id);
+    return this.taskService.findOne(params.id);
   }
 
   @Post('/createTask')
