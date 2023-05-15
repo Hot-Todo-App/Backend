@@ -52,4 +52,12 @@ export class TasksService {
     }
   }
   //update completed or not (status)
+  async updateTaskStatus(id: string, currentStatus: boolean): Promise<void> {
+    const task = this.taskModel.findOne<Task>({ where: { id: id } });
+    if (task) {
+      await task.update({ status: !currentStatus });
+    } else {
+      throw new Error('Task not found...');
+    }
+  }
 }
