@@ -7,6 +7,8 @@ import { Injectable, Controller } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ApiTags } from '@nestjs/swagger';
 import { Task } from './task.model';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { v4 as uuidv4 } from 'uuid';
 @ApiTags('tasks')
 @Controller('tasks')
 @Injectable()
@@ -20,7 +22,9 @@ export class TasksService {
     return this.taskModel.findAll<Task>();
   }
   async create(task: Task): Promise<Task> {
-    const { id, ...taskData } = task;
+    const { ...taskData } = task;
+    const id = uuidv4();
+    taskData.id = id;
     return this.taskModel.create<Task>(taskData);
   }
   async destroy(id: number): Promise<void> {

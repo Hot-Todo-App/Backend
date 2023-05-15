@@ -7,27 +7,29 @@ import {
   CreatedAt,
   UpdatedAt,
 } from 'sequelize-typescript';
-
+import { ApiProperty } from '@nestjs/swagger';
 @Table({ tableName: 'Tasks' })
 export class Task extends Model {
   @Column({
     primaryKey: true,
     autoIncrement: true,
   })
-  id: number;
+  @ApiProperty({ example: 1 })
+  id: string;
 
   @Column(DataType.STRING)
+  @ApiProperty({ example: 'To do the laundry' })
   title: string;
 
-  @Column(DataType.STRING)
-  date: string;
-
   @Column(DataType.BOOLEAN)
+  @ApiProperty({ example: true })
   status: boolean;
 
   @CreatedAt
+  @ApiProperty({ example: new Date() })
   createdAt: Date;
 
   @UpdatedAt
+  @ApiProperty({ example: new Date() })
   updatedAt: Date;
 }

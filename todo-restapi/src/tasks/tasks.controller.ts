@@ -20,12 +20,12 @@ import { ApiTags, ApiParam } from '@nestjs/swagger';
 @Controller('tasks')
 export class TasksController {
   constructor(private taskService: TasksService) {}
-  @Get()
+  @Get('/getAllTasks')
   findAll(): Promise<Task[]> {
     return this.taskService.findAll();
   }
-  @Post()
-  create(@Body() task: Task): Promise<Task> {
+  @Post('/createTask')
+  addTask(@Body() task: Task): Promise<Task> {
     return this.taskService.create(task);
   }
   @Delete(':id')
