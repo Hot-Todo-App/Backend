@@ -13,7 +13,7 @@ import { TasksModule } from './tasks/tasks.module';
       password: 'password',
       database: 'test',
       models: [Task],
-      synchronize: true,
+      synchronize: true, // Use with caution
     }),
     TasksModule,
   ],
