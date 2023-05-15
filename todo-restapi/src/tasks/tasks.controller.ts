@@ -24,6 +24,12 @@ export class TasksController {
   findAll(): Promise<Task[]> {
     return this.taskService.findAll();
   }
+  @Get()
+  @ApiParam({ name: 'id' })
+  findOne(@Param() params): Promise<Task> {
+    return taskService.findOne(params.id);
+  }
+
   @Post('/createTask')
   addTask(@Body() task: Task): Promise<Task> {
     return this.taskService.create(task);
