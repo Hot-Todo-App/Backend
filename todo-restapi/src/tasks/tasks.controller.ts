@@ -44,14 +44,10 @@ export class TasksController {
     return this.taskService.destroy(id);
   }
 
-  @Put('/editTaskStatus/:id/:status')
+  @Put('/editTaskStatus/:id')
   @ApiParam({ name: 'id' })
-  @ApiParam({ name: 'status' })
-  updateStatus(
-    @Param('id') id: string,
-    @Param('status') status: boolean,
-  ): Promise<Task> {
-    return this.taskService.updateTaskStatus(id, status);
+  updateStatus(@Param('id') id: string): Promise<Task> {
+    return this.taskService.updateTaskStatus(id);
   }
 
   @Put('/editTitle/:id/:title')
