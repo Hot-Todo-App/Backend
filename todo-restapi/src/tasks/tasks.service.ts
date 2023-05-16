@@ -43,10 +43,18 @@ export class TasksService {
       throw new Error('Task not found');
     }
   }
-  async updateTitle(id: string, newTitle: string): Promise<void> {
+  async updateTitle(id: string, newTitle: string): Promise<Task> {
     const task = await this.taskModel.findOne<Task>({ where: { id: id } });
     if (task) {
-      await task.update({ title: newTitle });
+      const task1 = {
+        id: task.id,
+        title: newTitle,
+        status: task.status,
+        createdAt: task.createdAt,
+        updatedAt: task.updatedAt,
+      };
+      console.log(task1);
+      return await task.update(task1, { where: { id: id } });
     } else {
       throw new Error('Task not found...');
     }
