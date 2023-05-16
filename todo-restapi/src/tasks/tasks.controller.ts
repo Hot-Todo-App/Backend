@@ -20,23 +20,43 @@ import { ApiTags, ApiParam } from '@nestjs/swagger';
 @Controller('tasks')
 export class TasksController {
   constructor(private taskService: TasksService) {}
-  @Get()
+  @Get('/getAllTasks')
   findAll(): Promise<Task[]> {
     return this.taskService.findAll();
   }
-  @Post()
-  create(@Body() task: Task): Promise<Task> {
+  @Get('/getAllCompletedTasks')
+  findCompleted(): Promise<Task[]> {
+    return this.taskService.findCompleted();
+  }
+  @Get(':id')
+  @ApiParam({ name: 'id' })
+  findOne(@Param('id') id: string): Promise<Task> {
+    return this.taskService.findOne(id);
+  }
+
+  @Post('/createTask')
+  addTask(@Body() task: Task): Promise<Task> {
     return this.taskService.create(task);
   }
-  @Delete(':id')
+  @Delete('/delete/:id')
   @ApiParam({ name: 'id' })
-  destroy(@Param('id') id: number): Promise<void> {
+  destroy(@Param('id') id: string): Promise<void> {
     return this.taskService.destroy(id);
   }
-  @Put(':id')
+
+  @Put('/editTaskStatus/:id')
+  @ApiParam({ name: 'id' })
+  updateStatus(@Param('id') id: string): Promise<Task> {
+    return this.taskService.updateTaskStatus(id);
+  }
+
+  @Put('/editTitle/:id/:title')
   @ApiParam({ name: 'id' })
   @ApiParam({ name: 'title' })
-  update(@Param('id') id: number, @Param('title') title): Promise<void> {
+  updateTitle(
+    @Param('id') id: string,
+    @Param('title') title: string,
+  ): Promise<Task> {
     return this.taskService.updateTitle(id, title);
   }
 }
