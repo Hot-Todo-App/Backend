@@ -51,19 +51,25 @@ export class TasksService {
         title: newTitle,
         status: task.status,
         createdAt: task.createdAt,
-        updatedAt: task.updatedAt,
+        updatedAt: new Date(),
       };
-      console.log(task1);
       return await task.update(task1, { where: { id: id } });
     } else {
       throw new Error('Task not found...');
     }
   }
   //update completed or not (status)
-  async updateTaskStatus(id: string, currentStatus: boolean): Promise<void> {
+  async updateTaskStatus(id: string, status: boolean): Promise<Task> {
     const task = await this.taskModel.findOne<Task>({ where: { id: id } });
     if (task) {
-      await task.update({ status: !currentStatus });
+      const task1 = {
+        id: task.id,
+        title: task.title,
+        status: !status,
+        createdAt: task.createdAt,
+        updatedAt: new Date(),
+      };
+      return await task.update(task1, { where: { id: id } });
     } else {
       throw new Error('Task not found...');
     }
