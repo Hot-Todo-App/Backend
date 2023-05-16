@@ -1,0 +1,156 @@
+openapi: 3.0.0
+info:
+  title: Tasks API
+  description: API for managing tasks
+  version: 1.0.0
+
+paths:
+  /tasks/getAllTasks:
+    get:
+      summary: Get all tasks
+      tags:
+        - tasks
+      responses:
+        '200':
+          description: A list of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+
+  /tasks/getAllCompletedTasks:
+    get:
+      summary: Get all completed tasks
+      tags:
+        - tasks
+      responses:
+        '200':
+          description: A list of completed tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+
+  /tasks/{id}:
+    get:
+      summary: Get a task by ID
+      tags:
+        - tasks
+      parameters:
+        - name: id
+          in: path
+          description: ID of the task
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: Task not found
+
+  /tasks/createTask:
+    post:
+      summary: Create a new task
+      tags:
+        - tasks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+
+  /tasks/delete/{id}:
+    delete:
+      summary: Delete a task by ID
+      tags:
+        - tasks
+      parameters:
+        - name: id
+          in: path
+          description: ID of the task
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Task deleted successfully
+        '404':
+          description: Task not found
+
+  /tasks/editTaskStatus/{id}:
+    put:
+      summary: Update the status of a task
+      tags:
+        - tasks
+      parameters:
+        - name: id
+          in: path
+          description: ID of the task
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: Task not found
+
+  /tasks/editTitle/{id}/{title}:
+    put:
+      summary: Update the title of a task
+      tags:
+        - tasks
+      parameters:
+        - name: id
+          in: path
+          description: ID of the task
+          required: true
+          schema:
+            type: string
+        - name: title
+          in: path
+          description: New title for the task
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task title updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: Task not found
+
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+        title: type:string
+        description: type:string
+        completed: type:boolean
