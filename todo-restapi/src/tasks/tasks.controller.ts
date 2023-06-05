@@ -15,6 +15,7 @@ import {
 import { TasksService } from './tasks.service';
 import { Task } from './task.model';
 import { ApiTags, ApiParam } from '@nestjs/swagger';
+import { TaskDto } from 'src/dto/task.dto';
 
 @ApiTags('tasks')
 @Controller('tasks')
@@ -35,8 +36,8 @@ export class TasksController {
   }
 
   @Post('/createTask')
-  addTask(@Body() task: Task): Promise<Task> {
-    return this.taskService.create(task);
+  addTask(@Body() taskDto: TaskDto): Promise<Task> {
+    return this.taskService.create(taskDto);
   }
   @Delete('/delete/:id')
   @ApiParam({ name: 'id' })

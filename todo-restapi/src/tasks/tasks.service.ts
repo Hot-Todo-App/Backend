@@ -9,6 +9,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Task } from './task.model';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { v4 as uuidv4 } from 'uuid';
+import { TaskDto } from 'src/dto/task.dto';
 @ApiTags('tasks')
 @Controller('tasks')
 @Injectable()
@@ -29,8 +30,8 @@ export class TasksService {
     return this.taskModel.findOne<Task>({ where: { id: id } });
   }
 
-  async create(task: Task): Promise<Task> {
-    const { ...taskData } = task;
+  async create(taskDto: TaskDto): Promise<Task> {
+    const { ...taskData } = taskDto;
     const id = uuidv4();
     taskData.id = id;
     return this.taskModel.create<Task>(taskData);
