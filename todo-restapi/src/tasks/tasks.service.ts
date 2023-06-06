@@ -37,19 +37,13 @@ export class TasksService {
   ): Promise<Task[]> {
     const where: any = { status};
     console.log(where)
-    if (startDate && endDate) {
-      where[dateField] = {
-        [Op.between]: [new Date(startDate), new Date(endDate)],
-      };
-    } else if (startDate) {
-      where[dateField] = {
-        [Op.gte]: new Date(startDate),
-      };
-    } else if (endDate) {
-      where[dateField] = {
-        [Op.lte]: new Date(endDate),
-      };
-    }
+
+    if(endDate || startDate)
+    where[dateField] = {
+      [Op.lte]: endDate ? new Date(endDate) : undefined,
+      [Op.gte]: startDate ? new Date(startDate): undefined,
+    };
+
   
     return this.taskModel.findAll<Task>({ where });
   }

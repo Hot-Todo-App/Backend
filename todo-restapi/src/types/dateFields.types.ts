@@ -1,4 +1,4 @@
 export enum DATE_FIELDS {
-    CREATED_AT = "cratedAt",
+    CREATED_AT = "createdAt",
     UPDATED_AT = "updatedAt"
   }
