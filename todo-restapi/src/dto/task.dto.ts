@@ -1,7 +1,7 @@
 import { ApiBody, ApiExtraModels, ApiProperty } from '@nestjs/swagger';
-
+import {Exclude} from 'class-transformer';
 export class TaskDto {
-  @ApiProperty({ example: '50749d0c-bf4b-4669-8771-1d8805838d22' })
+    @Exclude()
   id: string;
 
   @ApiProperty({ example: 'Task Title' })
@@ -10,9 +10,9 @@ export class TaskDto {
   @ApiProperty({ example: false })
   status: boolean;
 
-  @ApiProperty({ example: new Date() })
+  @Exclude()
   createdAt: Date;
 
-  @ApiProperty({ example: new Date() })
+  @Exclude()  
   updatedAt: Date;
 }
