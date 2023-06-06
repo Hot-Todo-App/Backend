@@ -28,6 +28,15 @@ describe('TasksController',()=>{
     
             }
         }),
+        findOne: jest.fn(dto=>{
+            return{
+             id:'7f5ec651-6029-4147-97fa-a10617008c0f',
+              title: 'Task Title',
+              status: TASKS_STATUS.CREATED,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            }
+        })
     }
 
     beforeEach(async()=>{
