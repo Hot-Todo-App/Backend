@@ -11,47 +11,62 @@ import {
   Delete,
   Param,
   Put,
+  Query,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { Task } from './task.model';
-import { ApiTags, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiParam, ApiBody, ApiQuery, ApiOperation } from '@nestjs/swagger';
 import { TaskDto } from '../dto/task.dto';
 
+export enum DateField {
+  CreatedAt = 'createdAt',
+  UpdatedAt = 'updatedAt',
+}
 @ApiTags('tasks')
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly taskService: TasksService) {}
-  @Get('/')
-  findAll(): Promise<Task[]> {
-    return this.taskService.findAll();
+  constructor(private readonly taskService: TasksService) { }
+  
+  @Get("/")
+  @ApiQuery({ name: 'status', required: false, example: false })
+  @ApiQuery({ name: 'dateField', required: false, enum: DateField })
+  @ApiQuery({ name: 'startDate', required: false, example: new Date() })
+  @ApiQuery({ name: 'endDate', required: false,example: new Date() })
+  findCompleted(
+    @Query('status') status?: boolean,
+    @Query('dateField') dateField?: DateField,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string): Promise<Task[]> {
+    return this.taskService.findTasksBy(status,dateField,startDate,endDate);
   }
-  @Get('/getAllCompletedTasks')
-  findCompleted(): Promise<Task[]> {
-    return this.taskService.findCompleted();
-  }
+
+
   @Get(':id')
   @ApiParam({ name: 'id' })
   findOne(@Param('id') id: string): Promise<Task> {
     return this.taskService.findOne(id);
   }
 
-  @Post('/createTask')
+
+  @ApiBody({ type: TaskDto })
+  @Post('/')
   addTask(@Body() taskDto: TaskDto): Promise<Task> {
     return this.taskService.create(taskDto);
   }
-  @Delete('/delete/:id')
+
+  @Delete('/:id')
   @ApiParam({ name: 'id' })
   destroy(@Param('id') id: string): Promise<void> {
     return this.taskService.destroy(id);
   }
 
-  @Put('/editTaskStatus/:id')
+  @Put('/status/:id')
   @ApiParam({ name: 'id' })
   updateStatus(@Param('id') id: string): Promise<Task> {
     return this.taskService.updateTaskStatus(id);
   }
 
-  @Put('/editTitle/:id/:title')
+  @Put('/title/:id/:title')
   @ApiParam({ name: 'id' })
   @ApiParam({ name: 'title' })
   updateTitle(

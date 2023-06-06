@@ -10,6 +10,8 @@ import { Task } from './task.model';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { v4 as uuidv4 } from 'uuid';
 import { TaskDto } from '../dto/task.dto';
+import { Op } from 'sequelize';
+import { DateField } from './tasks.controller';
 @ApiTags('tasks')
 @Controller('tasks')
 @Injectable()
@@ -26,6 +28,28 @@ export class TasksService {
   async findCompleted(): Promise<Task[]> {
     return this.taskModel.findAll<Task>({ where: { status: true } });
   }
+  
+  async findTasksBy(status: boolean, dateField: DateField, startDate: string, endDate: string): Promise<Task[]> {
+    const where: any = { status };
+    if (startDate && endDate) {
+      where[dateField] = {
+        [Op.between]: [new Date(startDate), new Date(endDate)],
+      };
+    } else if (startDate) {
+      where[dateField] = {
+        [Op.gte]: new Date(startDate),
+      };
+    } else if (endDate) {
+      where[dateField] = {
+        [Op.lte]: new Date(endDate),
+      };
+    }
+    return this.taskModel.findAll<Task>({ where });
+  }
+  
+
+  //get all un-completed tasks
+  
   async findOne(id: string): Promise<Task> {
     return this.taskModel.findOne<Task>({ where: { id: id } });
   }
