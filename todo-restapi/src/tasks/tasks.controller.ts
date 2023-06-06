@@ -15,13 +15,13 @@ import {
 import { TasksService } from './tasks.service';
 import { Task } from './task.model';
 import { ApiTags, ApiParam } from '@nestjs/swagger';
-import { TaskDto } from 'src/dto/task.dto';
+import { TaskDto } from '../dto/task.dto';
 
 @ApiTags('tasks')
 @Controller('tasks')
 export class TasksController {
-  constructor(private taskService: TasksService) {}
-  @Get('/getAllTasks')
+  constructor(private readonly taskService: TasksService) {}
+  @Get('/')
   findAll(): Promise<Task[]> {
     return this.taskService.findAll();
   }

@@ -9,7 +9,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Task } from './task.model';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { v4 as uuidv4 } from 'uuid';
-import { TaskDto } from 'src/dto/task.dto';
+import { TaskDto } from '../dto/task.dto';
 @ApiTags('tasks')
 @Controller('tasks')
 @Injectable()
@@ -72,7 +72,7 @@ export class TasksService {
         updatedAt: new Date(),
       };
       console.log(task1);
-      return await task.update(task1, { where: { id: id } });
+      return await task.save();
     } else {
       throw new Error('Task not found...');
     }
