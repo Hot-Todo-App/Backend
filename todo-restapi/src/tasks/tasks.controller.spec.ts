@@ -3,6 +3,7 @@ import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';
 import { v4 as uuidv4 } from 'uuid';
 import { TASKS_STATUS } from '../types/tasksStatus.types';
+import { TaskDto } from 'src/dto/task.dto';
 
 describe('TasksController',()=>{
     let controller: TasksController;
@@ -57,5 +58,18 @@ describe('TasksController',()=>{
             updatedAt: expect.any(Date)
           });
         });
+        it('should find a task by ID', async () => {
+            const id = '7f5ec651-6029-4147-97fa-a10617008c0f';
+            const task: TaskDto = {
+              id: id,
+              title: 'Task Title',
+              status: TASKS_STATUS.CREATED,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            };
+            const result = await controller.findOne(id);
+
+            expect(result).toEqual(task);
+          });
     });
 

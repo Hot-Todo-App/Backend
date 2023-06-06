@@ -57,13 +57,14 @@ export class TasksController {
     return this.taskService.destroy(id);
   }
 
-  @Put('/status/:id')
+  @Put('/:id/:status')
   @ApiParam({ name: 'id' })
-  updateStatus(@Param('id') id: string): Promise<Task> {
-    return this.taskService.updateTaskStatus(id);
+  @ApiParam({ name: 'status' ,enum: Object.values(TASKS_STATUS) })
+  updateStatus(@Param('id') id: string, @Param('status') status: TASKS_STATUS): Promise<Task> {
+    return this.taskService.updateTaskStatus(id,status);
   }
 
-  @Put('/title/:id/:title')
+  @Put('/:id/:title')
   @ApiParam({ name: 'id' })
   @ApiParam({ name: 'title' })
   updateTitle(

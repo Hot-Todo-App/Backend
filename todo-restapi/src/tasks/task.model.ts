@@ -8,6 +8,7 @@ import {
   UpdatedAt,
 } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
+import { TASKS_STATUS } from 'src/types/tasksStatus.types';
 @Table({ tableName: 'Tasks' })
 export class Task extends Model {
   @Column({
@@ -23,7 +24,7 @@ export class Task extends Model {
 
   @Column(DataType.BOOLEAN)
   @ApiProperty({ example: false })
-  status: boolean;
+  status: TASKS_STATUS;
 
   @CreatedAt
   @ApiProperty({ example: new Date() })

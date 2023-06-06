@@ -36,31 +36,19 @@ export class TasksService {
   ): Promise<Task[]> {
 
     const where: any = { status};
-
-    if (startDate && endDate){
+    
+    if (startDate && endDate) {
       const formattedStartDate = new Date(startDate);
       const formattedEndDate = new Date(endDate);
-      if (formattedStartDate > formattedEndDate){
-        throw new Error("You have problem with the dates");
-      }else{
-        where[dateField] = {
-          [Op.between]: [formattedStartDate,formattedEndDate]
-        }
+      if (formattedEndDate < formattedStartDate){
+        throw new Error("Oops Wrong dates...");
       }
-    }else if (startDate) {
-      where[dateField] = {
-        [Op.gte]: new Date(startDate),
-      };
-    } else if (endDate) {
-      where[dateField] = {
-        [Op.lte]: new Date(endDate),
-      };
-
-      
     }
+    
 
-   
-
+    if(startDate || endDate) where[dateField] = {}
+    if(startDate) where[dateField][Op.gte] = new Date(startDate);      
+    if(endDate)  where[dateField][Op.lte] = new Date(endDate);
   
     return this.taskModel.findAll<Task>({ where });
   }
@@ -101,21 +89,22 @@ export class TasksService {
     }
   }
   //update completed or not (status)
-  async updateTaskStatus(id: string): Promise<Task> {
+  async updateTaskStatus(id: string, _status: TASKS_STATUS): Promise<Task> {
     const task = await this.taskModel.findOne<Task>({ where: { id: id } });
-    const newStatus = !task.status;
     if (task) {
-      const task1 = {
-        id: task.id,
-        title: task.title,
-        status: newStatus,
-        createdAt: task.createdAt,
-        updatedAt: new Date(),
-      };
-      console.log(task1);
-      return await task.save();
+      if (task.status !== _status) {
+        const task1 = {
+          id: task.id,
+          title: task.title,
+          status: _status,
+          createdAt: task.createdAt,
+          updatedAt: new Date(),
+        };
+        Object.assign(task, task1);
+        return await task.save();
+      }
     } else {
       throw new Error('Task not found...');
     }
   }
-}
+}  
