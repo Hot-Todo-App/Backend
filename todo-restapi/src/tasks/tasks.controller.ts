@@ -17,8 +17,8 @@ import { TasksService } from './tasks.service';
 import { Task } from './task.model';
 import { ApiTags, ApiParam, ApiBody, ApiQuery, ApiOperation } from '@nestjs/swagger';
 import { TaskDto } from '../dto/task.dto';
-import { DATE_FIELDS } from 'src/types/dateFields.types';
-import { TASKS_STATUS } from 'src/types/tasksStatus.types';
+import { DATE_FIELDS } from '../types/dateFields.types';
+import { TASKS_STATUS } from '../types/tasksStatus.types';
 
 @ApiTags('tasks')
 @Controller('tasks')

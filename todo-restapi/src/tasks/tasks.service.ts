@@ -7,12 +7,11 @@ import { Injectable, Controller } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ApiTags } from '@nestjs/swagger';
 import { Task } from './task.model';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { v4 as uuidv4 } from 'uuid';
 import { TaskDto } from '../dto/task.dto';
 import { Op } from 'sequelize';
-import { DATE_FIELDS } from 'src/types/dateFields.types';
-import { TASKS_STATUS } from 'src/types/tasksStatus.types';
+import { DATE_FIELDS } from '../types/dateFields.types';
+import { TASKS_STATUS } from '../types/tasksStatus.types';
 
 
 @ApiTags('tasks')
@@ -35,14 +34,32 @@ export class TasksService {
     startDate: string,
     endDate: string
   ): Promise<Task[]> {
-    const where: any = { status};
-    console.log(where)
 
-    if(endDate || startDate)
-    where[dateField] = {
-      [Op.lte]: endDate ? new Date(endDate) : undefined,
-      [Op.gte]: startDate ? new Date(startDate): undefined,
-    };
+    const where: any = { status};
+
+    if (startDate && endDate){
+      const formattedStartDate = new Date(startDate);
+      const formattedEndDate = new Date(endDate);
+      if (formattedStartDate > formattedEndDate){
+        throw new Error("You have problem with the dates");
+      }else{
+        where[dateField] = {
+          [Op.between]: [formattedStartDate,formattedEndDate]
+        }
+      }
+    }else if (startDate) {
+      where[dateField] = {
+        [Op.gte]: new Date(startDate),
+      };
+    } else if (endDate) {
+      where[dateField] = {
+        [Op.lte]: new Date(endDate),
+      };
+
+      
+    }
+
+   
 
   
     return this.taskModel.findAll<Task>({ where });

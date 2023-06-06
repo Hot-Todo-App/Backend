@@ -1,6 +1,6 @@
 import { ApiBody, ApiExtraModels, ApiProperty } from '@nestjs/swagger';
 import {Exclude} from 'class-transformer';
-import { TASKS_STATUS } from 'src/types/tasksStatus.types';
+import { TASKS_STATUS } from '../types/tasksStatus.types';
 export class TaskDto {
   @Exclude()
   id: string;
