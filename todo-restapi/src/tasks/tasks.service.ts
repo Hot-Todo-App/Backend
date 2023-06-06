@@ -11,7 +11,10 @@ import { Task } from './task.model';
 import { v4 as uuidv4 } from 'uuid';
 import { TaskDto } from '../dto/task.dto';
 import { Op } from 'sequelize';
-import { DateField } from './tasks.controller';
+import { DATE_FIELDS } from 'src/types/dateFields.types';
+import { TASKS_STATUS } from 'src/types/tasksStatus.types';
+
+
 @ApiTags('tasks')
 @Controller('tasks')
 @Injectable()
@@ -24,13 +27,16 @@ export class TasksService {
   async findAll(): Promise<Task[]> {
     return this.taskModel.findAll<Task>();
   }
-  //get all completed tasks
-  async findCompleted(): Promise<Task[]> {
-    return this.taskModel.findAll<Task>({ where: { status: true } });
-  }
-  
-  async findTasksBy(status: boolean, dateField: DateField, startDate: string, endDate: string): Promise<Task[]> {
-    const where: any = { status };
+
+
+  async findTasksBy(
+    status: TASKS_STATUS,
+    dateField: DATE_FIELDS,
+    startDate: string,
+    endDate: string
+  ): Promise<Task[]> {
+    const where: any = { status};
+    console.log(where)
     if (startDate && endDate) {
       where[dateField] = {
         [Op.between]: [new Date(startDate), new Date(endDate)],
@@ -44,11 +50,10 @@ export class TasksService {
         [Op.lte]: new Date(endDate),
       };
     }
+  
     return this.taskModel.findAll<Task>({ where });
   }
   
-
-  //get all un-completed tasks
   
   async findOne(id: string): Promise<Task> {
     return this.taskModel.findOne<Task>({ where: { id: id } });
@@ -58,6 +63,7 @@ export class TasksService {
     const { ...taskData } = taskDto;
     const id = uuidv4();
     taskData.id = id;
+    taskData.status = TASKS_STATUS.CREATED;
     return this.taskModel.create<Task>(taskData);
   }
   async destroy(id: string): Promise<void> {

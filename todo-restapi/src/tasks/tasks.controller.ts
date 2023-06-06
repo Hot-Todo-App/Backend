@@ -17,29 +17,26 @@ import { TasksService } from './tasks.service';
 import { Task } from './task.model';
 import { ApiTags, ApiParam, ApiBody, ApiQuery, ApiOperation } from '@nestjs/swagger';
 import { TaskDto } from '../dto/task.dto';
+import { DATE_FIELDS } from 'src/types/dateFields.types';
+import { TASKS_STATUS } from 'src/types/tasksStatus.types';
 
-export enum DateField {
-  CreatedAt = 'createdAt',
-  UpdatedAt = 'updatedAt',
-}
 @ApiTags('tasks')
 @Controller('tasks')
 export class TasksController {
   constructor(private readonly taskService: TasksService) { }
   
   @Get("/")
-  @ApiQuery({ name: 'status', required: false, example: false })
-  @ApiQuery({ name: 'dateField', required: false, enum: DateField })
+  @ApiQuery({ name: 'status', required: false, enum: Object.values(TASKS_STATUS) })
+  @ApiQuery({ name: 'dateField', required: false, enum: DATE_FIELDS })
   @ApiQuery({ name: 'startDate', required: false, example: new Date() })
   @ApiQuery({ name: 'endDate', required: false,example: new Date() })
   findCompleted(
-    @Query('status') status?: boolean,
-    @Query('dateField') dateField?: DateField,
+    @Query('status') status?: TASKS_STATUS,
+    @Query('dateField') dateField?: DATE_FIELDS,
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string): Promise<Task[]> {
     return this.taskService.findTasksBy(status,dateField,startDate,endDate);
   }
-
 
   @Get(':id')
   @ApiParam({ name: 'id' })
