@@ -40,8 +40,10 @@ export class TasksService {
     if (startDate && endDate) {
       const formattedStartDate = new Date(startDate);
       const formattedEndDate = new Date(endDate);
+
       if (formattedEndDate < formattedStartDate){
         throw new Error("Oops Wrong dates...");
+        return;
       }
     }
     
@@ -58,7 +60,7 @@ export class TasksService {
     return this.taskModel.findOne<Task>({ where: { id: id } });
   }
 
-  async create(taskDto: TaskDto): Promise<Task> {
+  async create(taskDto: Partial<TaskDto>): Promise<Task> {
     const { ...taskData } = taskDto;
     const id = uuidv4();
     taskData.id = id;
