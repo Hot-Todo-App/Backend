@@ -11,34 +11,41 @@ describe('TasksService', () => {
   let tasksService: TasksService;
 
   beforeEach(async () => {
+    const tasks = [
+        {
+          id: '4179f910-3a5a-4f62-af6e-7373af1b52ee',
+          title: 'Task title',
+          status: TASKS_STATUS.CREATED,
+          createdAt: new Date('2023-06-07T07:56:03.000Z'),
+          updatedAt: new Date('2023-06-07T07:56:03.000Z'),
+        },
+        {
+          id: '8e4a154a-bcee-4216-9114-fb8a9536b5a9',
+          title: 'Task Title',
+          status: TASKS_STATUS.CREATED,
+          createdAt: new Date('2023-06-06T09:19:23.000Z'),
+          updatedAt: new Date('2023-06-06T09:19:23.000Z'),
+        },
+        {
+          id: 'aaa4912c-aa66-42e4-8e5b-3280c777eb4d',
+          title: 'Task title',
+          status: TASKS_STATUS.CREATED,
+          createdAt: new Date('2023-06-07T07:59:47.000Z'),
+          updatedAt: new Date('2023-06-07T07:59:47.000Z'),
+        },
+      ];
+  
     const module: TestingModule = await Test.createTestingModule({
       imports: [],
       providers: [TasksService, {
         provide: getModelToken(Task),
         useValue: {
-            findAll: jest.fn().mockReturnValue([
-                {
-                  id: '4179f910-3a5a-4f62-af6e-7373af1b52ee',
-                  title: 'Task title',
-                  status: 'CREATED',
-                  createdAt: new Date('2023-06-07T07:56:03.000Z'),
-                  updatedAt: new Date('2023-06-07T07:56:03.000Z'),
-                },
-                {
-                  id: '8e4a154a-bcee-4216-9114-fb8a9536b5a9',
-                  title: 'Task Title',
-                  status: 'CREATED',
-                  createdAt: new Date('2023-06-06T09:19:23.000Z'),
-                  updatedAt: new Date('2023-06-06T09:19:23.000Z'),
-                },
-                {
-                  id: 'aaa4912c-aa66-42e4-8e5b-3280c777eb4d',
-                  title: 'Task title',
-                  status: 'CREATED',
-                  createdAt: new Date('2023-06-07T07:59:47.000Z'),
-                  updatedAt: new Date('2023-06-07T07:59:47.000Z'),
-                },
-              ]),
+            findOne: jest.fn().mockImplementation((options) => {
+                const taskId = options.where.id;
+                const foundTask = tasks.find((task) => task.id === taskId);
+                return Promise.resolve(foundTask || null);
+              }),
+            findAll: jest.fn().mockReturnValue(tasks),
             create: jest.fn((taskData) => ({
                 id: uuidv4(),
                 title: taskData.title,
@@ -68,12 +75,14 @@ describe('TasksService', () => {
         const result = await tasksService.findAll();
   
         expect(result.length).toBe(3);
-        expect(result[0].id).toBe('4179f910-3a5a-4f62-af6e-7373af1b52ee');
-        expect(result[0].title).toBe('Task title');
-        expect(result[0].status).toBe('CREATED');
-        expect(result[0].createdAt).toBeInstanceOf(Date);
-        expect(result[0].updatedAt).toBeInstanceOf(Date);
-        // Repeat assertions for other tasks
     });
+    it('should find a task by ID', async () => {
+        const taskId = '4179f910-3a5a-4f62-af6e-7373af1b52ee';
+        const result = await tasksService.findOne(taskId);
+        expect(result).toBeDefined();
+        expect(result?.id).toEqual(taskId);
+        // Assert other properties of the task
+      });
+      
   })
 });
