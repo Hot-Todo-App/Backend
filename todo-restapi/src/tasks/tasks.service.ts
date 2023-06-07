@@ -67,6 +67,7 @@ export class TasksService {
     taskData.status = TASKS_STATUS.CREATED;
     return this.taskModel.create<Task>(taskData);
   }
+  
   async destroy(id: string): Promise<void> {
     const task = await this.taskModel.findByPk<Task>(id);
     if (task) {
