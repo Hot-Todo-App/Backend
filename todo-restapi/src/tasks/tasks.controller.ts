@@ -70,7 +70,7 @@ export class TasksController {
   updateTitle(
     @Param('id') id: string,
     @Param('title') title: string,
-  ): Promise<void> {
+  ): Promise<Task> {
     return this.taskService.updateTitle(id, title);
   }
-}
+}  

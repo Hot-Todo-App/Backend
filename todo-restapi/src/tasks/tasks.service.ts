@@ -77,14 +77,26 @@ export class TasksService {
     }
   }
   
-  async updateTitle(id: string, newTitle: string): Promise<void> {
-    const task = await this.taskModel.findByPk<Task>(id);
-    if (task){
-      Task.update(task, {where: {id:id}})
+  async updateTitle(id: string, _title:string): Promise<Task> {
+    const task = await this.taskModel.findOne<Task>({ where: { id: id } });
+    if (task) {
+      if (task.title !== _title) {
+        const task1 = {
+          id: task.id,
+          title: _title,
+          status: task.status,
+          createdAt: task.createdAt,
+          updatedAt: new Date(),
+        };
+        Object.assign(task, task1);
+        const savedTask = await task.save();
+        return savedTask;
+      }
+    } else {
+      throw new Error('Task not found...');
     }
   }
-  
-  
+   
     
   //update completed or not (status)
   async updateTaskStatus(id: string, _status: TASKS_STATUS): Promise<Task> {
@@ -99,7 +111,8 @@ export class TasksService {
           updatedAt: new Date(),
         };
         Object.assign(task, task1);
-        return await task.save();
+        const savedTask = await task.save();
+        return savedTask;
       }
     } else {
       throw new Error('Task not found...');
