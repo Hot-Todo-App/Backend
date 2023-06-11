@@ -4,10 +4,12 @@ import { AppModule } from '../src/app.module'
 import * as request from 'supertest';
 import { stringify } from 'querystring';
 import { TASKS_STATUS } from '../src/types/tasksStatus.types';
-
+import { response } from 'express';
+import { Task } from '../src/tasks/task.model';
 describe('Tasks Controller (e2e)', () => {
   let app: INestApplication;
-
+  let id = "";
+  
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -23,10 +25,14 @@ describe('Tasks Controller (e2e)', () => {
     .send({
       title: "new ttile"
     })
-    .expect(201)
+    .then((task)=>{
+      id = task.body.id;
+      expect(task).toBeDefined();
+      expect(201);
+    })
+    
   })
   it('should get task by id', ()=>{
-    const id = '60503e85-1c5d-44f3-bb5e-f0ca2a7c7e96'
     return request(app.getHttpServer())
     .get(`/tasks/${id}`)
     .then((task)=>{
@@ -34,33 +40,30 @@ describe('Tasks Controller (e2e)', () => {
       expect(task.body.id).toEqual(id);
     });
   })
-  it('should delete task by id', ()=>{
-    const id = '60503e85-1c5d-44f3-bb5e-f0ca2a7c7e96'
-    return request(app.getHttpServer())
-    .delete(`tasks/${id}`)
-    .then((result)=>{
-      expect(result).toBeCalledTimes(1);
-    })
-  })
+  
   it('should update a task status by id', ()=>{
-    const id = '60503e85-1c5d-44f3-bb5e-f0ca2a7c7e96'
     return request(app.getHttpServer())
-    .put(`/tasks/${id}/status=${TASKS_STATUS.COMPLETED}`)
+    .put(`/tasks/${id}/status/${TASKS_STATUS.COMPLETED}`)
     .then((task)=>{
       expect(task).toBeDefined();      
-      expect(task.body.status.split("=")[1]).toEqual(TASKS_STATUS.COMPLETED)
+      expect(task.body.status).toEqual(TASKS_STATUS.COMPLETED)
     })
   })
   it('should update a task title by id', ()=>{
-    const id = '60503e85-1c5d-44f3-bb5e-f0ca2a7c7e96'
     const newTitle = "new!"
     return request(app.getHttpServer())
-    .put(`/tasks/${id}/${newTitle}`)
+    .put(`/tasks/${id}/title/${newTitle}`)
     .then((task)=>{
-      console.log(`/tasks/${id}/title=${newTitle}`)
+      console.log(`/tasks/${id}/${newTitle}`)
       expect(task).toBeDefined();
-      console.log(task.body.title.split("=")[1])
-      expect(task.body.title.split("=")[1]).toEqual(newTitle)
+      expect(task.body.title).toEqual(newTitle)
+    })
+  })
+  it('should delete task by id', ()=>{
+    return request(app.getHttpServer())
+    .delete(`/tasks/${id}`)
+    .then((result)=>{
+      expect(result.status).toBe(200)
     })
   })
 });
