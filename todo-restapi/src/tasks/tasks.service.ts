@@ -7,8 +7,13 @@ import { Injectable, Controller } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ApiTags } from '@nestjs/swagger';
 import { Task } from './task.model';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { v4 as uuidv4 } from 'uuid';
+import { TaskDto } from '../dto/task.dto';
+import { Op } from 'sequelize';
+import { DATE_FIELDS } from '../types/dateFields.types';
+import { TASKS_STATUS } from '../types/tasksStatus.types';
+
+
 @ApiTags('tasks')
 @Controller('tasks')
 @Injectable()
@@ -21,20 +26,48 @@ export class TasksService {
   async findAll(): Promise<Task[]> {
     return this.taskModel.findAll<Task>();
   }
-  //get all completed tasks
-  async findCompleted(): Promise<Task[]> {
-    return this.taskModel.findAll<Task>({ where: { status: true } });
+
+
+  async findTasksBy(
+    status: TASKS_STATUS,
+    dateField: DATE_FIELDS,
+    startDate: string,
+    endDate: string
+  ): Promise<Task[]> {
+
+    const where: any = { status};
+    
+    if (startDate && endDate) {
+      const formattedStartDate = new Date(startDate);
+      const formattedEndDate = new Date(endDate);
+
+      if (formattedEndDate < formattedStartDate){
+        throw new Error("Oops Wrong dates...");
+        return;
+      }
+    }
+    
+
+    if(startDate || endDate) where[dateField] = {}
+    if(startDate) where[dateField][Op.gte] = new Date(startDate);      
+    if(endDate)  where[dateField][Op.lte] = new Date(endDate);
+  
+    return this.taskModel.findAll<Task>({ where });
   }
+  
+  
   async findOne(id: string): Promise<Task> {
     return this.taskModel.findOne<Task>({ where: { id: id } });
   }
 
-  async create(task: Task): Promise<Task> {
-    const { ...taskData } = task;
+  async create(taskDto: Partial<TaskDto>): Promise<Task> {
+    const { ...taskData } = taskDto;
     const id = uuidv4();
     taskData.id = id;
+    taskData.status = TASKS_STATUS.CREATED;
     return this.taskModel.create<Task>(taskData);
   }
+  
   async destroy(id: string): Promise<void> {
     const task = await this.taskModel.findByPk<Task>(id);
     if (task) {
@@ -43,37 +76,46 @@ export class TasksService {
       throw new Error('Task not found');
     }
   }
-  async updateTitle(id: string, newTitle: string): Promise<Task> {
+  
+  async updateTitle(id: string, _title:string): Promise<Task> {
     const task = await this.taskModel.findOne<Task>({ where: { id: id } });
     if (task) {
-      const task1 = {
-        id: task.id,
-        title: newTitle,
-        status: task.status,
-        createdAt: task.createdAt,
-        updatedAt: new Date(),
-      };
-      return await task.update(task1, { where: { id: id } });
+      if (task.title !== _title) {
+        const task1 = {
+          id: task.id,
+          title: _title,
+          status: task.status,
+          createdAt: task.createdAt,
+          updatedAt: new Date(),
+        };
+        Object.assign(task, task1);
+        const savedTask = await task.save();
+        return savedTask;
+      }
     } else {
       throw new Error('Task not found...');
     }
   }
+   
+    
   //update completed or not (status)
-  async updateTaskStatus(id: string): Promise<Task> {
+  async updateTaskStatus(id: string, _status: TASKS_STATUS): Promise<Task> {
     const task = await this.taskModel.findOne<Task>({ where: { id: id } });
-    const newStatus = !task.status;
     if (task) {
-      const task1 = {
-        id: task.id,
-        title: task.title,
-        status: newStatus,
-        createdAt: task.createdAt,
-        updatedAt: new Date(),
-      };
-      console.log(task1);
-      return await task.update(task1, { where: { id: id } });
+      if (task.status !== _status) {
+        const task1 = {
+          id: task.id,
+          title: task.title,
+          status: _status,
+          createdAt: task.createdAt,
+          updatedAt: new Date(),
+        };
+        Object.assign(task, task1);
+        const savedTask = await task.save();
+        return savedTask;
+      }
     } else {
       throw new Error('Task not found...');
     }
   }
-}
+}  
