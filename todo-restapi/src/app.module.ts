@@ -9,10 +9,10 @@ import { TasksController } from './tasks/tasks.controller';
   imports: [
     SequelizeModule.forRoot({
       dialect: 'mysql',
-      host: 'localhost',
+      host: '127.0.0.1',
       port: 3306,
       username: 'root',
-      password: 'password',
+      password: 'Exodus9!',
       database: 'test',
       autoLoadModels: true,
       synchronize: true,
