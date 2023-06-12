@@ -2,10 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '../src/app.module'
 import * as request from 'supertest';
-import { stringify } from 'querystring';
 import { TASKS_STATUS } from '../src/types/tasksStatus.types';
-import { response } from 'express';
-import { Task } from '../src/tasks/task.model';
+
 describe('Tasks Controller (e2e)', () => {
   let app: INestApplication;
   let id = "";
