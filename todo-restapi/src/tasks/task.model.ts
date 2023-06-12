@@ -13,9 +13,9 @@ import { TASKS_STATUS } from '../types/tasksStatus.types';
 export class Task extends Model {
   @Column({
     primaryKey: true,
-    autoIncrement: true,
+    unique: true
   })
-  @ApiProperty({ example: 1 })
+  @ApiProperty({ example: 'bh76tr7' })
   id: string;
 
   @Column(DataType.STRING)

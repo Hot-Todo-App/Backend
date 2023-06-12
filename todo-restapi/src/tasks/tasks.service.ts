@@ -80,7 +80,6 @@ export class TasksService {
   async updateTitle(id: string, _title:string): Promise<Task> {
     const task = await this.taskModel.findOne<Task>({ where: { id: id } });
     if (task) {
-      if (task.title !== _title) {
         const task1 = {
           id: task.id,
           title: _title,
@@ -92,9 +91,9 @@ export class TasksService {
         const savedTask = await task.save();
         return savedTask;
       }
-    } else {
+     else {
       throw new Error('Task not found...');
-    }
+     }
   }
    
     
@@ -102,7 +101,6 @@ export class TasksService {
   async updateTaskStatus(id: string, _status: TASKS_STATUS): Promise<Task> {
     const task = await this.taskModel.findOne<Task>({ where: { id: id } });
     if (task) {
-      if (task.status !== _status) {
         const task1 = {
           id: task.id,
           title: task.title,
@@ -114,8 +112,8 @@ export class TasksService {
         const savedTask = await task.save();
         return savedTask;
       }
-    } else {
+     else {
       throw new Error('Task not found...');
-    }
+     }
   }
 }  
